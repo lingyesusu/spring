@@ -1,0 +1,775 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>mybatis入门基础(六)----高级映射(一对一，一对多，多对多) - 阿赫瓦里 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="/bundles/blog-common.css?v=ChDk9h03-S75WEqNhGvXkWireJ5cCWdK1xRM9NIXfnM1"/>
+<link id="MainCss" type="text/css" rel="stylesheet" href="/skins/SimpleBlue/bundle-SimpleBlue.css?v=jJERBFSojhmgst84aaRDal9S3q1WoO-WcNudmMzGJS81"/>
+<link type="text/css" rel="stylesheet" href="/blog/customcss/213250.css?v=SPawYyY3swemGXXqShNPS1jWASo%3d"/>
+<link id="mobile-style" media="only screen and (max-width: 768px)" type="text/css" rel="stylesheet" href="/skins/SimpleBlue/bundle-SimpleBlue-mobile.css?v=NNDA5QyCVOryYTTnKs-Bji3iJtsOwZNbIf8Qs7hMnyE1"/>
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/selene/rss"/>
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/selene/rsd.xml"/>
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/selene/wlwmanifest.xml"/>
+<script src="//common.cnblogs.com/script/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'selene', cb_enable_mathjax=true;var isLogined=false;</script>
+<script src="/bundles/blog-common.js?v=DRleNSOp-2-RdlbwNt69QQ4yKTISMA1DSih-VNOSd9w1" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+		
+<!--done-->
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/selene/">阿赫瓦里</a></div>
+<div class="subtitle">生命对于某些人来说，一直都是美丽的，因为这些人的一生都在为某个梦想而奋斗！！！</div>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li id="nav_sitehome"><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+<li id="nav_myhome"><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/selene/">首页</a></li>
+<li id="nav_newpost"><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li id="nav_contact"><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E9%98%BF%E8%B5%AB%E7%93%A6%E9%87%8C">联系</a></li>
+<li id="nav_rss"><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/selene/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/selene/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li id="nav_admin"><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<!--done-->
+随笔-56&nbsp;
+文章-0&nbsp;
+评论-346&nbsp;
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class = "post">
+		<h1 class = "postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/selene/p/4627446.html">mybatis入门基础(六)----高级映射(一对一，一对多，多对多)</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><h2>一：订单商品数据模型</h2>
+<p><strong>1.数据库执行脚本</strong></p>
+<p><strong>　　创建数据库表代码：</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('7c129cf7-3046-45e2-b5ba-085524a400d8')"><img id="code_img_closed_7c129cf7-3046-45e2-b5ba-085524a400d8" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_7c129cf7-3046-45e2-b5ba-085524a400d8" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('7c129cf7-3046-45e2-b5ba-085524a400d8',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_7c129cf7-3046-45e2-b5ba-085524a400d8" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">CREATE</span> <span style="color: #0000ff;">TABLE</span><span style="color: #000000;"> items (
+</span><span style="color: #008080;"> 2</span>   id <span style="color: #0000ff;">INT</span> <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span><span style="color: #000000;">  AUTO_INCREMENT,
+</span><span style="color: #008080;"> 3</span>   itemsname <span style="color: #0000ff;">VARCHAR</span>(<span style="color: #800000; font-weight: bold;">32</span>) <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">商品名称</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 4</span>   price <span style="color: #0000ff;">FLOAT</span>(<span style="color: #800000; font-weight: bold;">10</span>,<span style="color: #800000; font-weight: bold;">1</span>) <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">商品定价</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 5</span>   detail <span style="color: #0000ff;">TEXT</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">商品描述</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 6</span>   pic <span style="color: #0000ff;">VARCHAR</span>(<span style="color: #800000; font-weight: bold;">64</span>) <span style="color: #0000ff;">DEFAULT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">商品图片</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 7</span>   createtime <span style="color: #0000ff;">DATETIME</span> <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">生产日期</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;"> 8</span>   <span style="color: #0000ff;">PRIMARY</span> <span style="color: #0000ff;">KEY</span><span style="color: #000000;"> (id)
+</span><span style="color: #008080;"> 9</span> )  <span style="color: #0000ff;">DEFAULT</span> CHARSET<span style="color: #808080;">=</span><span style="color: #000000;">utf8;
+</span><span style="color: #008080;">10</span> 
+<span style="color: #008080;">11</span> <span style="color: #008080;">/*</span><span style="color: #008080;">Table structure for table `orderdetail` </span><span style="color: #008080;">*/</span>
+<span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">CREATE</span> <span style="color: #0000ff;">TABLE</span><span style="color: #000000;"> orderdetail (
+</span><span style="color: #008080;">14</span>   id <span style="color: #0000ff;">INT</span> <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span><span style="color: #000000;"> AUTO_INCREMENT,
+</span><span style="color: #008080;">15</span>  orders_id <span style="color: #0000ff;">INT</span> <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">订单id</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">16</span>   items_id <span style="color: #0000ff;">INT</span> <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">商品id</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">17</span>   items_num <span style="color: #0000ff;">INT</span>  <span style="color: #0000ff;">DEFAULT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">商品购买数量</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">18</span>   <span style="color: #0000ff;">PRIMARY</span> <span style="color: #0000ff;">KEY</span><span style="color: #000000;"> (id),
+</span><span style="color: #008080;">19</span>   <span style="color: #0000ff;">KEY</span><span style="color: #000000;"> `FK_orderdetail_1` (`orders_id`),
+</span><span style="color: #008080;">20</span>   <span style="color: #0000ff;">KEY</span><span style="color: #000000;"> `FK_orderdetail_2` (`items_id`),
+</span><span style="color: #008080;">21</span>   <span style="color: #0000ff;">CONSTRAINT</span> `FK_orderdetail_1` <span style="color: #0000ff;">FOREIGN</span> <span style="color: #0000ff;">KEY</span> (`orders_id`) <span style="color: #0000ff;">REFERENCES</span> `orders` (`id`) <span style="color: #0000ff;">ON</span> <span style="color: #0000ff;">DELETE</span> NO ACTION <span style="color: #0000ff;">ON</span> <span style="color: #0000ff;">UPDATE</span><span style="color: #000000;"> NO ACTION,
+</span><span style="color: #008080;">22</span>   <span style="color: #0000ff;">CONSTRAINT</span> `FK_orderdetail_2` <span style="color: #0000ff;">FOREIGN</span> <span style="color: #0000ff;">KEY</span> (`items_id`) <span style="color: #0000ff;">REFERENCES</span> `items` (`id`) <span style="color: #0000ff;">ON</span> <span style="color: #0000ff;">DELETE</span> NO ACTION <span style="color: #0000ff;">ON</span> <span style="color: #0000ff;">UPDATE</span><span style="color: #000000;"> NO ACTION
+</span><span style="color: #008080;">23</span> )  <span style="color: #0000ff;">DEFAULT</span> CHARSET<span style="color: #808080;">=</span><span style="color: #000000;">utf8;
+</span><span style="color: #008080;">24</span> 
+<span style="color: #008080;">25</span> <span style="color: #008080;">/*</span><span style="color: #008080;">Table structure for table `orders` </span><span style="color: #008080;">*/</span>
+<span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span> <span style="color: #0000ff;">CREATE</span> <span style="color: #0000ff;">TABLE</span><span style="color: #000000;"> orders (
+</span><span style="color: #008080;">28</span>   id <span style="color: #0000ff;">INT</span> <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span><span style="color: #000000;"> AUTO_INCREMENT,
+</span><span style="color: #008080;">29</span>   <span style="color: #ff00ff;">user_id</span> <span style="color: #0000ff;">INT</span> <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">下单用户id</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">30</span>   <span style="color: #0000ff;">number</span> <span style="color: #0000ff;">VARCHAR</span>(<span style="color: #800000; font-weight: bold;">30</span>) <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">订单号</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">31</span>   createtime <span style="color: #0000ff;">DATETIME</span> <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">创建订单时间</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">32</span>   note <span style="color: #0000ff;">VARCHAR</span>(<span style="color: #800000; font-weight: bold;">100</span>) <span style="color: #0000ff;">DEFAULT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">备注</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">33</span>   <span style="color: #0000ff;">PRIMARY</span> <span style="color: #0000ff;">KEY</span><span style="color: #000000;"> (`id`),
+</span><span style="color: #008080;">34</span>   <span style="color: #0000ff;">KEY</span> `FK_orders_1` (`<span style="color: #ff00ff;">user_id</span><span style="color: #000000;">`),
+</span><span style="color: #008080;">35</span>   <span style="color: #0000ff;">CONSTRAINT</span> `FK_orders_id` <span style="color: #0000ff;">FOREIGN</span> <span style="color: #0000ff;">KEY</span> (`<span style="color: #ff00ff;">user_id</span>`) <span style="color: #0000ff;">REFERENCES</span> `t_user` (`id`) <span style="color: #0000ff;">ON</span> <span style="color: #0000ff;">DELETE</span> NO ACTION <span style="color: #0000ff;">ON</span> <span style="color: #0000ff;">UPDATE</span><span style="color: #000000;"> NO ACTION
+</span><span style="color: #008080;">36</span> )  <span style="color: #0000ff;">DEFAULT</span> CHARSET<span style="color: #808080;">=</span><span style="color: #000000;">utf8;
+</span><span style="color: #008080;">37</span> 
+<span style="color: #008080;">38</span> <span style="color: #008080;">/*</span><span style="color: #008080;">Table structure for table `t_user` </span><span style="color: #008080;">*/</span>
+<span style="color: #008080;">39</span> 
+<span style="color: #008080;">40</span> <span style="color: #0000ff;">CREATE</span> <span style="color: #0000ff;">TABLE</span><span style="color: #000000;"> t_user (
+</span><span style="color: #008080;">41</span>   id <span style="color: #0000ff;">INT</span> <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span><span style="color: #000000;"> AUTO_INCREMENT,
+</span><span style="color: #008080;">42</span>   username <span style="color: #0000ff;">VARCHAR</span>(<span style="color: #800000; font-weight: bold;">32</span>) <span style="color: #808080;">NOT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">用户名称</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">43</span>   birthday DATE <span style="color: #0000ff;">DEFAULT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">生日</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">44</span>   sex <span style="color: #0000ff;">CHAR</span>(<span style="color: #800000; font-weight: bold;">1</span>) <span style="color: #0000ff;">DEFAULT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">性别</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">45</span>   address  <span style="color: #0000ff;">VARCHAR</span>(<span style="color: #800000; font-weight: bold;">256</span>) <span style="color: #0000ff;">DEFAULT</span> <span style="color: #0000ff;">NULL</span> COMMENT <span style="color: #ff0000;">'</span><span style="color: #ff0000;">地址</span><span style="color: #ff0000;">'</span><span style="color: #000000;">,
+</span><span style="color: #008080;">46</span>   <span style="color: #0000ff;">PRIMARY</span> <span style="color: #0000ff;">KEY</span><span style="color: #000000;"> (`id`)
+</span><span style="color: #008080;">47</span> ) <span style="color: #0000ff;">DEFAULT</span> CHARSET<span style="color: #808080;">=</span>utf8;</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p>　　<strong>测试数据代码：</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('486cfbe8-e804-4f50-a6da-2e71d0ef3063')"><img id="code_img_closed_486cfbe8-e804-4f50-a6da-2e71d0ef3063" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_486cfbe8-e804-4f50-a6da-2e71d0ef3063" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('486cfbe8-e804-4f50-a6da-2e71d0ef3063',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_486cfbe8-e804-4f50-a6da-2e71d0ef3063" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008080;">/*</span><span style="color: #008080;">Data for the table `items` </span><span style="color: #008080;">*/</span>
+<span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">INSERT</span>  <span style="color: #0000ff;">INTO</span> items(itemsname,price,detail,pic,createtime) <span style="color: #0000ff;">VALUES</span> 
+<span style="color: #008080;"> 4</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">台式机</span><span style="color: #ff0000;">'</span>,<span style="color: #800000; font-weight: bold;">3000.0</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">该电脑质量非常好！</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-07-07 13:28:53</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;"> 5</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">笔记本</span><span style="color: #ff0000;">'</span>,<span style="color: #800000; font-weight: bold;">6000.0</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">笔记本性能好，质量好！</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-07-08 13:22:57</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;"> 6</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">背包</span><span style="color: #ff0000;">'</span>,<span style="color: #800000; font-weight: bold;">200.0</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">名牌背包，容量大质量好！</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-07-010 13:25:02</span><span style="color: #ff0000;">'</span><span style="color: #000000;">);
+</span><span style="color: #008080;"> 7</span> 
+<span style="color: #008080;"> 8</span> <span style="color: #008080;">/*</span><span style="color: #008080;">Data for the table `orderdetail` </span><span style="color: #008080;">*/</span>
+<span style="color: #008080;"> 9</span> 
+<span style="color: #008080;">10</span> <span style="color: #0000ff;">INSERT</span>  <span style="color: #0000ff;">INTO</span> `orderdetail`(`orders_id`,`items_id`,`items_num`) <span style="color: #0000ff;">VALUES</span>
+<span style="color: #008080;">11</span>  (<span style="color: #800000; font-weight: bold;">1</span>,<span style="color: #800000; font-weight: bold;">1</span>,<span style="color: #800000; font-weight: bold;">1</span><span style="color: #000000;">),
+</span><span style="color: #008080;">12</span>  (<span style="color: #800000; font-weight: bold;">1</span>,<span style="color: #800000; font-weight: bold;">2</span>,<span style="color: #800000; font-weight: bold;">3</span><span style="color: #000000;">),
+</span><span style="color: #008080;">13</span>  (<span style="color: #800000; font-weight: bold;">2</span>,<span style="color: #800000; font-weight: bold;">3</span>,<span style="color: #800000; font-weight: bold;">4</span><span style="color: #000000;">),
+</span><span style="color: #008080;">14</span>  (<span style="color: #800000; font-weight: bold;">3</span>,<span style="color: #800000; font-weight: bold;">2</span>,<span style="color: #800000; font-weight: bold;">3</span><span style="color: #000000;">);
+</span><span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span> <span style="color: #008080;">/*</span><span style="color: #008080;">Data for the table `orders` </span><span style="color: #008080;">*/</span>
+<span style="color: #008080;">17</span> 
+<span style="color: #008080;">18</span> <span style="color: #0000ff;">INSERT</span>  <span style="color: #0000ff;">INTO</span> `orders`(`<span style="color: #ff00ff;">user_id</span>`,`<span style="color: #0000ff;">number</span>`,`createtime`,`note`) <span style="color: #0000ff;">VALUES</span> 
+<span style="color: #008080;">19</span> (<span style="color: #800000; font-weight: bold;">1</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1000010</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-06-04 13:22:35</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span><span style="color: #000000;">),
+</span><span style="color: #008080;">20</span> (<span style="color: #800000; font-weight: bold;">1</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1000011</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-07-08 13:22:41</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span><span style="color: #000000;">),
+</span><span style="color: #008080;">21</span> (<span style="color: #800000; font-weight: bold;">2</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1000012</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-07-17 14:13:23</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span><span style="color: #000000;">),
+</span><span style="color: #008080;">22</span> (<span style="color: #800000; font-weight: bold;">3</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1000012</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-07-16 18:13:23</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span><span style="color: #000000;">),
+</span><span style="color: #008080;">23</span> (<span style="color: #800000; font-weight: bold;">4</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1000012</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-07-15 19:13:23</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span><span style="color: #000000;">),
+</span><span style="color: #008080;">24</span> (<span style="color: #800000; font-weight: bold;">5</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1000012</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-07-14 17:13:23</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span><span style="color: #000000;">),
+</span><span style="color: #008080;">25</span> (<span style="color: #800000; font-weight: bold;">6</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1000012</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-07-13 16:13:23</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span><span style="color: #000000;">);
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span> <span style="color: #008080;">/*</span><span style="color: #008080;">Data for the table `user` </span><span style="color: #008080;">*/</span>
+<span style="color: #008080;">28</span> 
+<span style="color: #008080;">29</span> <span style="color: #0000ff;">INSERT</span>  <span style="color: #0000ff;">INTO</span> `t_user`(`username`,`birthday`,`sex`,`address`) <span style="color: #0000ff;">VALUES</span> 
+<span style="color: #008080;">30</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">王五</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span><span style="color: #000000;">),
+</span><span style="color: #008080;">31</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">张三</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2014-07-10</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">北京市</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;">32</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">张小明</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">河南郑州</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;">33</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">陈小明</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">河南郑州</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;">34</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">张三丰</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">河南郑州</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;">35</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">陈小明</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">河南郑州</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;">36</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">王五</span><span style="color: #ff0000;">'</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #0000ff;">NULL</span>,<span style="color: #0000ff;">NULL</span><span style="color: #000000;">),
+</span><span style="color: #008080;">37</span>  (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">小A</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-06-27</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">北京</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;">38</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">小B</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-06-27</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">北京</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;">39</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">小C</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-06-27</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">1</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">北京</span><span style="color: #ff0000;">'</span><span style="color: #000000;">),
+</span><span style="color: #008080;">40</span> (<span style="color: #ff0000;">'</span><span style="color: #ff0000;">小D</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2015-06-27</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">2</span><span style="color: #ff0000;">'</span>,<span style="color: #ff0000;">'</span><span style="color: #ff0000;">北京</span><span style="color: #ff0000;">'</span>);</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><strong>2.数据模型分析思路</strong></p>
+<p>(1).每张表记录的数据内容：分模块对每张表记录的内容进行熟悉，相当&nbsp;于你学习系统&nbsp;需求（功能）的过程;</p>
+<p><span style="font-family: 宋体;">(2).每张表重要的字段设置:非空字段、外键字段;</span></p>
+<p><span style="font-family: 宋体;">(3).数据库级别表与表之间的关系:外键关系;</span></p>
+<p><span style="font-family: 宋体;">(4).表与表之间的业务关系:<span style="color: #ff0000;">在分析表与表之间的业务关系时一定要建立在某个业务意义基础上去分析</span>。</span></p>
+<p><strong><span style="font-family: 宋体;">3.针对订单商品模型的数据库思路分析：</span></strong></p>
+<p>　　用户表:t_<span style="font-family: Calibri;">user--&gt;</span><span style="font-family: 宋体;">记录了购买商品的用户信息</span></p>
+<p>　　订单表:orders--&gt;记录了用户所创建的订单（购买商品的订单）</p>
+<p>　　订单明细表:orderdetail--&gt;记录了订单的详细信息即购买商品的信息</p>
+<p>　　商品表:items--&gt;记录了商品信息</p>
+<p>表与表之间的业务关系：</p>
+<p>　　在分析表与表之间的业务关系时需要建立&nbsp;在某个业务意义基础上去分析。</p>
+<p>　　先分析数据级别之间有关系的表之间的业务关系：</p>
+<p><strong>t_user<span style="font-family: 宋体;">和</span><span style="font-family: Calibri;">orders</span><span style="font-family: 宋体;">：</span></strong></p>
+<p>　　t_user----&gt;orders<span style="font-family: 宋体;">：一个用户可以创建多个订单，一对多</span></p>
+<p>　　orders---&gt;t_user<span style="font-family: 宋体;">：一个订单只由一个用户创建，一对一</span></p>
+<p><strong>orders和orderdetail<span style="font-family: 宋体;">：</span></strong></p>
+<p>　　orders---&gt;orderdetail<span style="font-family: 宋体;">：一个订单可以包括多个订单明细，因为一个订单可以购买多个商品，每个商品的购买信息在</span>orderdetail<span style="font-family: 宋体;">记录，一对多关系</span></p>
+<p>　　orderdetail--&gt;&nbsp;orders：一个订单明细只能包括在一个订单中，一对一</p>
+<p><strong>orderdetail和<span style="font-family: Calibri;">itesm</span><span style="font-family: 宋体;">：</span></strong></p>
+<p>　　orderdetail---&gt;<span style="font-family: Calibri;">itesms</span><span style="font-family: 宋体;">：一个订单明细只对应一个商品信息，一对一</span></p>
+<p>　　items--&gt;&nbsp;orderdetail:<span style="font-family: 宋体;">一个商品可以包括在多个订单明细&nbsp;，一对多</span></p>
+<p>再分析数据库级别没有关系的表之间是否有业务关系：</p>
+<p><strong>orders和<span style="font-family: Calibri;">items</span><span style="font-family: 宋体;">：</span></strong></p>
+<p>　　orders<span style="font-family: 宋体;">和</span><span style="font-family: Calibri;">items</span><span style="font-family: 宋体;">之间可以通过</span>orderdetail表建立&nbsp;关系。</p>
+<p><strong>4.分析之后画出对应的图，方便直观的了解业务关系</strong></p>
+<p><img src="http://images0.cnblogs.com/blog2015/712052/201507/071636432524539.png" alt="" /></p>
+<h2>二、一对一查询</h2>
+<p><strong>2.1.需求：查询订单信息，关联查询用户信息</strong>；</p>
+<p><strong>2.2.resultType实现</strong></p>
+<p><strong>2.2.1.sql语句　　</strong>　</p>
+<p>　　 &nbsp;确定查询的主表：订单表，确定查询的关联表：用户表。</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;">1</span> <span style="color: #0000ff;">SELECT</span>    t1.<span style="color: #808080;">*</span><span style="color: #000000;">,
+</span><span style="color: #008080;">2</span> <span style="color: #000000;">        t2.username,
+</span><span style="color: #008080;">3</span> <span style="color: #000000;">        t2.sex,
+</span><span style="color: #008080;">4</span> <span style="color: #000000;">        t2.address
+</span><span style="color: #008080;">5</span>     <span style="color: #0000ff;">FROM</span> 
+<span style="color: #008080;">6</span> <span style="color: #000000;">        orders t1,
+</span><span style="color: #008080;">7</span> <span style="color: #000000;">        t_user t2
+</span><span style="color: #008080;">8</span> <span style="color: #0000ff;">WHERE</span> t1.<span style="color: #ff00ff;">user_id</span><span style="color: #808080;">=</span>t2.id</pre>
+</div>
+<p><strong>2.2.2.创建entity实体</strong></p>
+<p><strong>　　用户实体：User.java</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> com.mybatis.entity;
+</span><span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.Date;
+</span><span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.List;
+</span><span style="color: #008000;">/**</span><span style="color: #008000;"> 
+ * @ClassName: User
+ * @Description: TODO(用户实体)
+ * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> 阿赫瓦里
+ </span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> User {
+    </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> Integer id;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 姓名</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> String username;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 性别</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> String sex;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 地址</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> String address;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 生日</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Date birthday;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 用户创建的订单列表</span>
+    <span style="color: #0000ff;">private</span> List&lt;Orders&gt;<span style="color: #000000;"> ordersList;
+       </span><span style="color: #008000;">//</span><span style="color: #008000;"> getter and setter ......</span><span style="color: #000000;">
+}</span></pre>
+</div>
+<p><strong>订单实体：orders.java</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> com.mybatis.entity;
+</span><span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.Date;
+</span><span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.List;
+</span><span style="color: #008000;">/**</span><span style="color: #008000;">
+ * @ClassName: Orders
+ * @Description: TODO(订单实体)
+ * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> 阿赫瓦里
+ </span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Orders {
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 主键订单Id </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Integer id;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 下单用户id </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Integer userid;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 订单号 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> String number;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 创建订单时间 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Date createTime;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 备注 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> String note;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 用户信息</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> User user;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 订单明细</span>
+    <span style="color: #0000ff;">private</span> List&lt;OrderDetail&gt;<span style="color: #000000;"> orderdetails;
+       </span><span style="color: #008000;">//</span><span style="color: #008000;">  getter and setter ......</span><span style="color: #000000;">
+}</span></pre>
+</div>
+<p><strong>商品实体：Items.java</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> com.mybatis.entity;
+</span><span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.Date;
+</span><span style="color: #008000;">/**</span><span style="color: #008000;">
+ * @ClassName: Items
+ * @Description: TODO(商品实体类)
+ * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> 阿赫瓦里
+ </span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> Items {
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 商品表主键Id </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Integer id;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 商品名称 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> String itemsName;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 商品定价 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span> <span style="color: #0000ff;">float</span><span style="color: #000000;"> price;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 商品描述 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> String detail;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 商品图片 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> String picture;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 生产日期 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Date createTime;
+</span><span style="color: #008000;">//</span><span style="color: #008000;"> getter and setter ......</span>
+}</pre>
+</div>
+<p><strong>订单明细实体：OrderDetail.java</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> com.mybatis.entity;
+</span><span style="color: #008000;">/**</span><span style="color: #008000;">
+ * @ClassName: OrderDetail
+ * @Description: TODO(订单明细实体)
+ * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> 阿赫瓦里
+ </span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> OrderDetail {
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 主鍵，訂單明细表Id </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Integer id;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 訂單Id </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Integer ordersId;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 商品id </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Integer itemsId;
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 商品购买数量 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Integer itemsNum;
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 明细对应的商品信息</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> Items items;
+        </span><span style="color: #008000;">//</span><span style="color: #008000;">  getter and setter ......</span>
+}</pre>
+</div>
+<p>&nbsp;创建一个包装类，将查询到的信息可以全部映射到此类:OrdersCustom.java</p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/**</span><span style="color: #008000;">
+ * @ClassName: OrdersCustom
+ * @Description: TODO(订单的扩展类,通过此类映射订单和用户的查询结果,让此类继承字段较多的实体类)
+ * </span><span style="color: #808080;">@author</span><span style="color: #008000;">: 阿赫瓦里
+ </span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span> OrdersCustom <span style="color: #0000ff;">extends</span><span style="color: #000000;"> Orders {
+    </span><span style="color: #008000;">//</span><span style="color: #008000;"> 添加用户的属性</span>
+    <span style="color: #0000ff;">private</span><span style="color: #000000;"> String username;
+    </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> String sex;
+    </span><span style="color: #0000ff;">private</span><span style="color: #000000;"> String address;
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> getter and setter......</span>
+}</pre>
+</div>
+<p><strong>2.2.3.创建OrdersCustomMapper.java</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">package</span><span style="color: #000000;"> com.mybatis.Mapper;
+</span><span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.List;
+</span><span style="color: #0000ff;">import</span><span style="color: #000000;"> com.mybatis.entity.OrdersCustom;
+
+</span><span style="color: #008000;">/**</span><span style="color: #008000;">
+ * @ClassName: OrdersMapperCustom
+ * @Description: TODO(OrdersMapperCustom的mapper)
+ * </span><span style="color: #808080;">@author</span><span style="color: #008000;"> 阿赫瓦里
+ </span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">public</span> <span style="color: #0000ff;">interface</span><span style="color: #000000;"> OrdersCustomMapper {
+    </span><span style="color: #008000;">/**</span><span style="color: #008000;"> 查询订单，关联查询用户信息 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">public</span> List&lt;OrdersCustom&gt;<span style="color: #000000;"> findOrdersUser();
+}</span></pre>
+</div>
+<p><strong>2.2.4.创建OrdersCustomMapper.xml和上面对应的接口名称一致，以便通过mapper接口加载配置文件</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #0000ff;">&lt;?</span><span style="color: #ff00ff;">xml version="1.0" encoding="UTF-8" </span><span style="color: #0000ff;">?&gt;</span>
+<span style="color: #0000ff;">&lt;!</span><span style="color: #ff00ff;">DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> namespace命名空间,作用就是对sql进行分类化的管理,理解为sql隔离
+    注意:使用mapper代理开发时，namespace有特殊作用,namespace等于mapper接口地址
+ </span><span style="color: #008000;">--&gt;</span>
+<span style="color: #0000ff;">&lt;</span><span style="color: #800000;">mapper </span><span style="color: #ff0000;">namespace</span><span style="color: #0000ff;">="com.mybatis.mapper.OrdersCustomMapper"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 查询订单，关联查询用户信息 </span><span style="color: #008000;">--&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">select </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="findOrdersUser"</span><span style="color: #ff0000;"> resultType</span><span style="color: #0000ff;">="com.mybatis.entity.OrdersCustom"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+    SELECT t1.*,
+        t2.username,
+        t2.sex,
+        t2.address
+    FROM
+        orders t1,
+        t_user t2
+    WHERE t1.user_id=t2.id
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">select</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">mapper</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><strong>2.3.resultMap实现</strong></p>
+<p><strong>2.3.1. sql语句同上</strong></p>
+<p><strong>2.3.2.&nbsp;<strong>resultMap映射思路：</strong></strong></p>
+<p>　　　　使用<span style="font-family: Calibri;">resultMap</span><span style="font-family: 宋体;">将查询结果中的订单信息映射到</span><span style="font-family: Calibri;">Orders</span><span style="font-family: 宋体;">对象中，在</span><span style="font-family: Calibri;">orders</span><span style="font-family: 宋体;">类中添加</span><span style="font-family: Calibri;">User</span><span style="font-family: 宋体;">属性，将关联查询出来的用户信息映射到</span><span style="font-family: Calibri;">orders</span><span style="font-family: 宋体;">对象中的</span><span style="font-family: Calibri;">user</span><span style="font-family: 宋体;">属性中（上面orders实体中已经添加）。</span></p>
+<p><strong><span style="font-family: 宋体;">2.3.3 ordersCustomMapper.xml</span></strong></p>
+<p><strong><span style="font-family: 宋体;">　　　1. 定义resultMap</span></strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 定义查询订单关联用户的 resultMap,将整个的查询结果映射到com.mybatis.entity.Orders中 </span><span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">resultMap </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="com.mybatis.entity.Orders"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="OrdersUserResultMap"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span>         <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 配置映射的订单信息 </span><span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;"> 4</span>         
+<span style="color: #008080;"> 5</span>         <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> id:查询列中的唯一标识,订单信息中的唯一标识，如果多列组成唯一标识(如：一般数据库设计中的字典表 使用联合主键)，就需要配置多个id 
+</span><span style="color: #008080;"> 6</span> <span style="color: #008000;">            column:订单信息的唯一标识 列
+</span><span style="color: #008080;"> 7</span> <span style="color: #008000;">            property:订单信息的唯一标识列所映射到orders中的那个属性(假如：数据库中orders表中的主键为orders_id,而实体属性名称为ordersId,
+</span><span style="color: #008080;"> 8</span> <span style="color: #008000;">                则这个配置应为&lt;id column="orders_id" property="ordersId"/&gt;,类似hibernate实体映射文件配置)。
+</span><span style="color: #008080;"> 9</span>         <span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;">10</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">id </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="id"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">11</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="user_id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="userid"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">12</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="number"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="number"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">13</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="createtime"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="createTime"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">14</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="note"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="note"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">15</span>         
+<span style="color: #008080;">16</span>         <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 配置映射的关联用户信息 </span><span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;">17</span>         
+<span style="color: #008080;">18</span>         <span style="color: #008000;">&lt;!--</span><span style="color: #008000;">association:用于映射关联查询单个对象的信息
+</span><span style="color: #008080;">19</span> <span style="color: #008000;">            property:要将关联查询的用户信息映射到Orders中那个属性
+</span><span style="color: #008080;">20</span>           <span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;">21</span>         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">association </span><span style="color: #ff0000;">property</span><span style="color: #0000ff;">="user"</span><span style="color: #ff0000;"> javaType</span><span style="color: #0000ff;">="com.mybatis.entity.User"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">22</span>             <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> id:关联查询用户的唯一标识 
+</span><span style="color: #008080;">23</span> <span style="color: #008000;">                column:指定唯一标识用户信息的列
+</span><span style="color: #008080;">24</span> <span style="color: #008000;">                property:映射到user的那个属性
+</span><span style="color: #008080;">25</span>             <span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;">26</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">id </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="user_id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="id"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">27</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="username"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="username"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">28</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="sex"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="sex"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">29</span>             <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="address"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="address"</span><span style="color: #0000ff;">/&gt;</span>
+<span style="color: #008080;">30</span>         <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">association</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;">31</span>         
+<span style="color: #008080;">32</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">resultMap</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><strong><span style="font-family: 宋体;">　　　2. statement定义</span></strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008080;"> 1</span>     <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 查询订单，关联查询用户信息,使用resultMap实现 </span><span style="color: #008000;">--&gt;</span>
+<span style="color: #008080;"> 2</span>     <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">select </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="findOrdersUserResultMap"</span><span style="color: #ff0000;"> resultMap</span><span style="color: #0000ff;">="OrdersUserResultMap"</span><span style="color: #0000ff;">&gt;</span>
+<span style="color: #008080;"> 3</span> <span style="color: #000000;">            SELECT t1.*,
+</span><span style="color: #008080;"> 4</span> <span style="color: #000000;">                t2.username,
+</span><span style="color: #008080;"> 5</span> <span style="color: #000000;">                t2.sex,
+</span><span style="color: #008080;"> 6</span> <span style="color: #000000;">                t2.address
+</span><span style="color: #008080;"> 7</span> <span style="color: #000000;">            FROM
+</span><span style="color: #008080;"> 8</span> <span style="color: #000000;">                orders t1,
+</span><span style="color: #008080;"> 9</span> <span style="color: #000000;">                t_user t2
+</span><span style="color: #008080;">10</span> <span style="color: #000000;">            WHERE t1.user_id=t2.id
+</span><span style="color: #008080;">11</span>     <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">select</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><strong>&nbsp;3.OrderCustomMapper.java接口中添加下面的方法</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/**</span><span style="color: #008000;"> 查询订单关联查询用户信息，使用reslutMap实现</span><span style="color: #008000;">*/</span>
+<span style="color: #0000ff;">public</span> List&lt;Orders&gt;findOrdersUserResultMap();</pre>
+</div>
+<p><strong>4.对是resultType和resultMap实现的Junit测试</strong></p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('af5e2844-13f9-4349-a237-e95bbfb75616')"><img id="code_img_closed_af5e2844-13f9-4349-a237-e95bbfb75616" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_af5e2844-13f9-4349-a237-e95bbfb75616" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('af5e2844-13f9-4349-a237-e95bbfb75616',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_af5e2844-13f9-4349-a237-e95bbfb75616" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> <span style="color: #0000ff;">package</span><span style="color: #000000;"> com.mybatis.test;
+</span><span style="color: #008080;"> 2</span> 
+<span style="color: #008080;"> 3</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.io.InputStream;
+</span><span style="color: #008080;"> 4</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> java.util.List;
+</span><span style="color: #008080;"> 5</span> 
+<span style="color: #008080;"> 6</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> org.apache.ibatis.io.Resources;
+</span><span style="color: #008080;"> 7</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> org.apache.ibatis.session.SqlSession;
+</span><span style="color: #008080;"> 8</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> org.apache.ibatis.session.SqlSessionFactory;
+</span><span style="color: #008080;"> 9</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> org.apache.ibatis.session.SqlSessionFactoryBuilder;
+</span><span style="color: #008080;">10</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> org.junit.Before;
+</span><span style="color: #008080;">11</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> org.junit.Test;
+</span><span style="color: #008080;">12</span> 
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> com.mybatis.entity.Orders;
+</span><span style="color: #008080;">14</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> com.mybatis.entity.OrdersCustom;
+</span><span style="color: #008080;">15</span> <span style="color: #0000ff;">import</span><span style="color: #000000;"> com.mybatis.mapper.OrdersCustomMapper;
+</span><span style="color: #008080;">16</span> 
+<span style="color: #008080;">17</span> <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">class</span><span style="color: #000000;"> OrdersCustomMapperTest {
+</span><span style="color: #008080;">18</span> 
+<span style="color: #008080;">19</span>     <span style="color: #0000ff;">private</span><span style="color: #000000;"> SqlSessionFactory sqlSessionFactory;
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> 此方法是在执行findUserByIdTest之前执行</span>
+<span style="color: #008080;">22</span> <span style="color: #000000;">    @Before
+</span><span style="color: #008080;">23</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span> setUp() <span style="color: #0000ff;">throws</span><span style="color: #000000;"> Exception {
+</span><span style="color: #008080;">24</span>         String resource = "SqlMapConfig.xml"<span style="color: #000000;">;
+</span><span style="color: #008080;">25</span>         InputStream inputStream =<span style="color: #000000;"> Resources.getResourceAsStream(resource);
+</span><span style="color: #008080;">26</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 创建SqlSessionFcatory</span>
+<span style="color: #008080;">27</span>         sqlSessionFactory = <span style="color: #0000ff;">new</span><span style="color: #000000;"> SqlSessionFactoryBuilder().build(inputStream);
+</span><span style="color: #008080;">28</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">29</span> 
+<span style="color: #008080;">30</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> 查询订单，关联查询用户信息，使用resultType实现的测试</span>
+<span style="color: #008080;">31</span> <span style="color: #000000;">    @Test
+</span><span style="color: #008080;">32</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> TestFindOrdersUser() {
+</span><span style="color: #008080;">33</span>         SqlSession sqlSession =<span style="color: #000000;"> sqlSessionFactory.openSession();
+</span><span style="color: #008080;">34</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 创建代理对象</span>
+<span style="color: #008080;">35</span>         OrdersCustomMapper oc = sqlSession.getMapper(OrdersCustomMapper.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
+</span><span style="color: #008080;">36</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 调用mapper的方法</span>
+<span style="color: #008080;">37</span>         List&lt;OrdersCustom&gt; list =<span style="color: #000000;"> oc.findOrdersUser();
+</span><span style="color: #008080;">38</span> <span style="color: #000000;">        System.out.println(list);
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">        sqlSession.close();
+</span><span style="color: #008080;">40</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">41</span> 
+<span style="color: #008080;">42</span>     <span style="color: #008000;">//</span><span style="color: #008000;"> 查询订单，关联查询用户信息，使用resultMap实现的测试</span>
+<span style="color: #008080;">43</span> <span style="color: #000000;">    @Test
+</span><span style="color: #008080;">44</span>     <span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> TestFindOrdersUserResultMap() {
+</span><span style="color: #008080;">45</span>         SqlSession sqlSession =<span style="color: #000000;"> sqlSessionFactory.openSession();
+</span><span style="color: #008080;">46</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 创建代理对象</span>
+<span style="color: #008080;">47</span>         OrdersCustomMapper oc = sqlSession.getMapper(OrdersCustomMapper.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
+</span><span style="color: #008080;">48</span>         <span style="color: #008000;">//</span><span style="color: #008000;"> 调用mapper的方法</span>
+<span style="color: #008080;">49</span>         List&lt;Orders&gt; list =<span style="color: #000000;"> oc.findOrdersUserResultMap();
+</span><span style="color: #008080;">50</span> <span style="color: #000000;">        System.out.println(list);
+</span><span style="color: #008080;">51</span> <span style="color: #000000;">        sqlSession.close();
+</span><span style="color: #008080;">52</span> 
+<span style="color: #008080;">53</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">54</span> 
+<span style="color: #008080;">55</span> }</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code</span></div>
+<p><strong>5.resultType<span style="font-family: 宋体;">和</span><span style="font-family: Calibri;">resultMap</span><span style="font-family: 宋体;">实现一对一查询小结</span></strong></p>
+<p>　实现一对一查询：</p>
+<p>　　a.resultType<span style="font-family: 宋体;">：使用</span><span style="font-family: Calibri;">resultType</span><span style="font-family: 宋体;">实现较为简单，如果</span><span style="font-family: Calibri;">pojo</span><span style="font-family: 宋体;">中没有包括查询出来的列名，需要增加列名对应的属性，即可完成映射。</span></p>
+<p>　　b.如果没有查询结果的特殊要求建议使用<span style="font-family: Calibri;">resultType</span><span style="font-family: 宋体;">。</span></p>
+<p>　　c.resultMap<span style="font-family: 宋体;">：需要单独定义</span><span style="font-family: Calibri;">resultMap</span><span style="font-family: 宋体;">，实现有点麻烦，如果对查询结果有特殊的要求，使用</span><span style="font-family: Calibri;">resultMap</span><span style="font-family: 宋体;">可以完成将关联查询映射</span><span style="font-family: Calibri;">pojo</span><span style="font-family: 宋体;">的属性中。</span></p>
+<p>　　d.resultMap<span style="font-family: 宋体;">可以实现延迟加载，</span><span style="font-family: Calibri;">resultType</span><span style="font-family: 宋体;">无法实现延迟加载。</span></p>
+<h2>三、一对多查询</h2>
+<p><strong>&nbsp;3.1. 需求：查询订单(关联用户)及订单明细</strong>；</p>
+<p><strong>&nbsp;3.2.&nbsp;在<span style="font-family: Calibri;">orders.java</span><span style="font-family: 宋体;">类中添加</span><span style="font-family: Calibri;">List&lt;orderDetail&gt;&nbsp;orderDetails</span></strong><span style="font-family: 宋体;"><strong>属性(上面实体已添加)</strong>。</span></p>
+<p>　　　　最终会将订单信息映射到<span style="font-family: Calibri;">orders</span><span style="font-family: 宋体;">中，订单所对应的订单明细映射到</span><span style="font-family: Calibri;">orders</span><span style="font-family: 宋体;">中的</span><span style="font-family: Calibri;">orderDetails</span><span style="font-family: 宋体;">属性中.</span></p>
+<p><strong><span style="font-family: 宋体;">3.3.在ordersCustomMapper.xml中添加如下代码</span></strong></p>
+<div class="cnblogs_code">
+<pre>    <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 查询订单关联查询用户及订单明细 </span><span style="color: #008000;">--&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">select </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="findOrdersAndOrderDetailResultMap"</span><span style="color: #ff0000;"> resultMap</span><span style="color: #0000ff;">="ordersAndOrderDetailResultMap"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+            SELECT 
+                  t1.*,
+                  t2.username,
+                  t2.sex,
+                  t2.address,
+                  t3.id orderdetail_id,
+                  t3.items_id,
+                  t3.items_num,
+                  t3.orders_id
+            FROM
+                  orders t1,
+                  t_user t2,
+                  orderdetail t3
+            WHERE t1.user_id = t2.id AND t3.orders_id=t1.id
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">select</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><strong>resultMap的定义同样添加到ordersCustomMapper.xml</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 查询订单(关联用户)及订单明细的resultMap </span><span style="color: #008000;">--&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">resultMap </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="com.mybatis.entity.Orders"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="ordersAndOrderDetailResultMap"</span><span style="color: #ff0000;"> extends</span><span style="color: #0000ff;">="OrdersUserResultMap"</span><span style="color: #0000ff;">&gt;</span>
+        <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 订单信息 </span><span style="color: #008000;">--&gt;</span>
+        <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 关联用户信息 </span><span style="color: #008000;">--&gt;</span>
+        <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 使用extends继承，不用在中配置订单信息和用户信息的映射</span><span style="color: #008000;">--&gt;</span>
+        
+        <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 关联订单明细信息 
+            一个订单关联查询出了多条订单明细,要使用collection映射
+            collection:对关联查询到的多条记录映射到集合中
+            property:将关联查询到的多条记录映射到orders类的那个属性
+            ofType:指定映射的集合属性中pojo的类型
+        </span><span style="color: #008000;">--&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">collection </span><span style="color: #ff0000;">property</span><span style="color: #0000ff;">="orderdetails"</span><span style="color: #ff0000;"> ofType</span><span style="color: #0000ff;">="com.mybatis.entity.OrderDetail"</span><span style="color: #0000ff;">&gt;</span>
+            <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> id:唯一标识
+                 property：要将订单明细的唯一标识映射到com.mybatis.entity.OrderDetail的那个属性
+             </span><span style="color: #008000;">--&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">id </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="orderdetail_id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="id"</span><span style="color: #0000ff;">/&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="items_id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="itemsId"</span><span style="color: #0000ff;">/&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="items_num"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="itemsNum"</span><span style="color: #0000ff;">/&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="orders_id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="ordersId"</span><span style="color: #0000ff;">/&gt;</span>
+        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">collection</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">resultMap</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><strong>3.4. 在OrderCustomMapper.java接口类中添加一个方法</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">/**</span><span style="color: #008000;">查询订单（关联用户）以及订单明细</span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">public</span> List&lt;OrderDetail&gt;findOrdersAndOrderDetailResultMap();</pre>
+</div>
+<p><strong>3.5.在Junit测试类中添加测试方法</strong></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">//</span><span style="color: #008000;"> 查询订单（关联用户）以及订单明细的测试</span>
+<span style="color: #000000;">    @Test
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> TestFindOrdersAndOrderDetailResultMap() {
+        SqlSession sqlSession </span>=<span style="color: #000000;"> sqlSessionFactory.openSession();
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> 创建代理对象</span>
+        OrdersCustomMapper oc = sqlSession.getMapper(OrdersCustomMapper.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> 调用mapper的方法</span>
+        List&lt;OrderDetail&gt; list =<span style="color: #000000;"> oc.findOrdersAndOrderDetailResultMap();
+        System.out.println(list);
+        sqlSession.close();  
+    }</span></pre>
+</div>
+<p><strong>3.6. 小结</strong>　</p>
+<p>　mybatis<span style="font-family: 宋体;">使用</span><span style="font-family: Calibri;">resultMap</span><span style="font-family: 宋体;">的</span><span style="font-family: Calibri;">collection</span><span style="font-family: 宋体;">对关联查询的多条记录映射到一个</span><span style="font-family: Calibri;">list</span><span style="font-family: 宋体;">集合属性中。</span></p>
+<p>　使用<span style="font-family: Calibri;">resultType</span><span style="font-family: 宋体;">实现：将订单明细映射到orders中的orderdetails中，需要自己处理，使用双重循环遍历，去掉重复记录，将订单明细放在orderdetails中。</span></p>
+<h2>四、多对多查询</h2>
+<p><strong>&nbsp;4.1.需求：查询用户以及用户购买的商品信息</strong></p>
+<p><strong>4.2.映射思路</strong></p>
+<p>　　将用户信息映射到<span style="font-family: Calibri;">user</span><span style="font-family: 宋体;">中。</span></p>
+<p>　　在<span style="font-family: Calibri;">user</span><span style="font-family: 宋体;">类中添加订单列表属性</span><span style="font-family: Calibri;">List&lt;Orders&gt;&nbsp;orderslist</span><span style="font-family: 宋体;">，将用户创建的订单映射到</span><span style="font-family: Calibri;">orderslist;</span></p>
+<p>　　在<span style="font-family: Calibri;">Orders</span><span style="font-family: 宋体;">中添加订单明细列表属性</span><span style="font-family: Calibri;">List&lt;OrderDetail&gt;orderdetials</span><span style="font-family: 宋体;">，将订单的明细映射到</span><span style="font-family: Calibri;">orderdetials;</span></p>
+<p>　　在<span style="font-family: Calibri;">OrderDetail</span><span style="font-family: 宋体;">中添加</span><span style="font-family: Calibri;">Items</span><span style="font-family: 宋体;">属性，将订单明细所对应的商品映射到</span><span style="font-family: Calibri;">Item；</span></p>
+<p><span style="font-size: 16px;"><strong><span style="font-family: Calibri;">4.3.OrdersCustomMapper.xml添加如下代码</span></strong></span></p>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 查询用户即购买的商品信息的ResultMap </span><span style="color: #008000;">--&gt;</span>
+        <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">resultMap </span><span style="color: #ff0000;">type</span><span style="color: #0000ff;">="com.mybatis.entity.User"</span><span style="color: #ff0000;"> id</span><span style="color: #0000ff;">="userAndItemsResultMap"</span><span style="color: #0000ff;">&gt;</span>
+            <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 用户信息 </span><span style="color: #008000;">--&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">id </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="user_id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="id"</span><span style="color: #0000ff;">/&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="username"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="username"</span><span style="color: #0000ff;">/&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="sex"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="sex"</span><span style="color: #0000ff;">/&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="address"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="address"</span><span style="color: #0000ff;">/&gt;</span>
+        <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 订单信息
+            一个用户对应多个订单，使用collection映射 </span><span style="color: #008000;">--&gt;</span>
+            <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">collection </span><span style="color: #ff0000;">property</span><span style="color: #0000ff;">="ordersList"</span><span style="color: #ff0000;"> ofType</span><span style="color: #0000ff;">="com.mybatis.entity.Orders"</span><span style="color: #0000ff;">&gt;</span>
+                 <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">id </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="id"</span><span style="color: #0000ff;">/&gt;</span>
+                 <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="user_id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="userid"</span><span style="color: #0000ff;">/&gt;</span>
+                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="number"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="number"</span><span style="color: #0000ff;">/&gt;</span>
+                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="createtime"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="createTime"</span><span style="color: #0000ff;">/&gt;</span>
+                <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="note"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="note"</span><span style="color: #0000ff;">/&gt;</span>
+            
+             <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 订单明细
+                     一个订单包括 多个明细
+                  </span><span style="color: #008000;">--&gt;</span>
+                  <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">collection </span><span style="color: #ff0000;">property</span><span style="color: #0000ff;">="orderdetails"</span><span style="color: #ff0000;"> ofType</span><span style="color: #0000ff;">="com.mybatis.entity.OrderDetail"</span><span style="color: #0000ff;">&gt;</span>
+                          <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">id </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="orderdetail_id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="id"</span><span style="color: #0000ff;">/&gt;</span>
+                         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="items_id"</span><span style="color: #ff0000;">   property</span><span style="color: #0000ff;">="itemsId"</span><span style="color: #0000ff;">/&gt;</span>
+                         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="items_num"</span><span style="color: #ff0000;">  property</span><span style="color: #0000ff;">="itemsNum"</span><span style="color: #0000ff;">/&gt;</span>
+                         <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="orders_id"</span><span style="color: #ff0000;">  property</span><span style="color: #0000ff;">="ordersId"</span><span style="color: #0000ff;">/&gt;</span>
+                         <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 商品信息
+                              一个订单明细对应一个商品
+                           </span><span style="color: #008000;">--&gt;</span>
+                       <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">association </span><span style="color: #ff0000;">property</span><span style="color: #0000ff;">="items"</span><span style="color: #ff0000;"> javaType</span><span style="color: #0000ff;">="com.mybatis.entity.Items"</span><span style="color: #0000ff;">&gt;</span>
+                           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">id </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="items_id"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="id"</span><span style="color: #0000ff;">/&gt;</span>
+                           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="items_name"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="itemsName"</span><span style="color: #0000ff;">/&gt;</span>
+                           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="items_detail"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="detail"</span><span style="color: #0000ff;">/&gt;</span>
+                           <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">result </span><span style="color: #ff0000;">column</span><span style="color: #0000ff;">="items_price"</span><span style="color: #ff0000;"> property</span><span style="color: #0000ff;">="price"</span><span style="color: #0000ff;">/&gt;</span>
+                       <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">association</span><span style="color: #0000ff;">&gt;</span>
+                  <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">collection</span><span style="color: #0000ff;">&gt;</span>
+              <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">collection</span><span style="color: #0000ff;">&gt;</span>
+            
+        <span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">resultMap</span><span style="color: #0000ff;">&gt;</span>
+    <span style="color: #008000;">&lt;!--</span><span style="color: #008000;"> 查询用户及用户购买的商品信息，使用resulaMap</span><span style="color: #008000;">--&gt;</span>
+    <span style="color: #0000ff;">&lt;</span><span style="color: #800000;">select </span><span style="color: #ff0000;">id</span><span style="color: #0000ff;">="findUserAndItemsResultMap"</span><span style="color: #ff0000;"> resultMap</span><span style="color: #0000ff;">="userAndItemsResultMap"</span><span style="color: #0000ff;">&gt;</span><span style="color: #000000;">
+            SELECT 
+                   t1.*,
+                   t2.username,
+                   t2.sex,
+                   t2.address,
+                   t3.id orderdetail_id,
+                   t3.items_id,
+                   t3.items_num,
+                   t3.orders_id,
+                   t4.itemsname items_name,
+                   t4.detail items_detail,
+                   t4.price items_price
+            FROM
+                  orders t1,
+                  t_user t2,
+                  orderdetail t3,
+                  items t4
+            WHERE t1.user_id =  t2.id AND  t3.orders_id=t1.id AND t3.items_id = t4.id
+    </span><span style="color: #0000ff;">&lt;/</span><span style="color: #800000;">select</span><span style="color: #0000ff;">&gt;</span></pre>
+</div>
+<p><strong>4.4.&nbsp;在OrderCustomMapper.java添加如下方法</strong></p>
+<div class="cnblogs_code">
+<pre>    <span style="color: #008000;">/**</span><span style="color: #008000;"> 查询用户及用户所购买的商品信息 </span><span style="color: #008000;">*/</span>
+    <span style="color: #0000ff;">public</span> List&lt;User&gt; findUserAndItemsResultMap();</pre>
+</div>
+<p><strong>4.5.在Junit测试类中添加测试方法</strong><span style="font-family: Calibri;"><strong>　</strong></span></p>
+<div class="cnblogs_code">
+<pre>    <span style="color: #008000;">//</span><span style="color: #008000;"> 查询用户及用户购买的商品的信息</span>
+<span style="color: #000000;">    @Test
+    </span><span style="color: #0000ff;">public</span> <span style="color: #0000ff;">void</span><span style="color: #000000;"> TestFindUserAndItemsResultMap() {
+        SqlSession sqlSession </span>=<span style="color: #000000;"> sqlSessionFactory.openSession();
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> 创建代理对象</span>
+        OrdersCustomMapper oc = sqlSession.getMapper(OrdersCustomMapper.<span style="color: #0000ff;">class</span><span style="color: #000000;">);
+        </span><span style="color: #008000;">//</span><span style="color: #008000;"> 调用mapper的方法</span>
+        List&lt;User&gt; list =<span style="color: #000000;"> oc.findUserAndItemsResultMap();
+        System.out.println(list);
+        sqlSession.close();
+    }</span></pre>
+</div>
+<p><strong>4.6.resultMap总结</strong></p>
+<p><strong>resultType<span style="font-family: 宋体;">：</span></strong></p>
+<p>　　<strong>作用</strong>：将查询结果按照sql列名pojo属性名一致性映射到pojo中。</p>
+<p>　　<strong>场合</strong>：</p>
+<p>　　　　常见一些明细记录的展示，比如用户购买商品明细，将关联查询信息全部展示在页面时，此时可直接使用<span style="font-family: Calibri;">resultType</span><span style="font-family: 宋体;">将每一条记录映射到</span><span style="font-family: Calibri;">pojo</span><span style="font-family: 宋体;">中，在前端页面遍历</span><span style="font-family: Calibri;">list</span><span style="font-family: 宋体;">（</span><span style="font-family: Calibri;">list</span><span style="font-family: 宋体;">中是</span><span style="font-family: Calibri;">pojo</span><span style="font-family: 宋体;">）即可。</span></p>
+<p><strong>resultMap</strong><span style="font-family: 宋体;">：</span></p>
+<p>　　使用<span style="font-family: Calibri;">association</span><span style="font-family: 宋体;">和</span><span style="font-family: Calibri;">collection</span><span style="font-family: 宋体;">完成一对一和一对多高级映射（对结果有特殊的映射要求）。</span></p>
+<p><strong>association</strong><span style="font-family: 宋体;">：</span></p>
+<p>　　<strong>作用</strong>：将关联查询信息映射到一个pojo对象中。</p>
+<p>　　<strong>场合</strong>：</p>
+<p>　　　　为了方便查询关联信息可以使用<span style="font-family: Calibri;">association</span><span style="font-family: 宋体;">将关联订单信息映射为用户对象的</span><span style="font-family: Calibri;">pojo</span><span style="font-family: 宋体;">属性中，比如：查询订单及关联用户信息。</span></p>
+<p>　　　　使用<span style="font-family: Calibri;">resultType</span><span style="font-family: 宋体;">无法将查询结果映射到</span><span style="font-family: Calibri;">pojo</span><span style="font-family: 宋体;">对象的</span><span style="font-family: Calibri;">pojo</span><span style="font-family: 宋体;">属性中，根据对结果集查询遍历的需要选择使用</span><span style="font-family: Calibri;">resultType</span><span style="font-family: 宋体;">还是</span><span style="font-family: Calibri;">resultMap</span><span style="font-family: 宋体;">。</span></p>
+<p><strong>collection<span style="font-family: 宋体;">：</span></strong></p>
+<p>　　<strong>作用</strong>：将关联查询信息映射到一个list集合中。</p>
+<p>　　<strong>场合</strong>：</p>
+<p>　　　　为了方便查询遍历关联信息可以使用<span style="font-family: Calibri;">collection</span><span style="font-family: 宋体;">将关联信息映射到</span><span style="font-family: Calibri;">list</span><span style="font-family: 宋体;">集合中，比如：查询用户权限范围模块及模块下的菜单，可使用</span><span style="font-family: Calibri;">collection</span><span style="font-family: 宋体;">将模块映射到模块</span><span style="font-family: Calibri;">list</span><span style="font-family: 宋体;">中，将菜单列表映射到模块对象的菜单</span><span style="font-family: Calibri;">list</span><span style="font-family: 宋体;">属性中，这样的作的目的也是方便对查询结果集进行遍历查询。</span></p>
+<p>　　如果使用<span style="font-family: Calibri;">resultType</span><span style="font-family: 宋体;">无法将查询结果映射到</span><span style="font-family: Calibri;">list</span><span style="font-family: 宋体;">集合中。</span></p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info">
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"></div>
+</div>
+
+
+		</div>
+		<div class = "postDesc">posted @ <span id="post-date">2015-07-07 23:38</span> <a href='http://www.cnblogs.com/selene/'>阿赫瓦里</a> 阅读(<span id="post_view_count">...</span>) 评论(<span id="post_comment_count">...</span>)  <a href ="https://i.cnblogs.com/EditPosts.aspx?postid=4627446" rel="nofollow">编辑</a> <a href="#" onclick="AddToWz(4627446);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=213250,cb_entryId=4627446,cb_blogApp=currentBlogApp,cb_blogUserGuid='14051ccd-1497-e411-b908-9dcfd8948a71',cb_entryCreatedDate='2015/7/7 23:38:00';loadViewCount(cb_entryId);var cb_postType=1;</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id='comment_form' class='commentform'>
+<a name='commentform'></a>
+<div id='divCommentShow'></div>
+<div id='comment_nav'><span id='span_refresh_tips'></span><a href='javascript:void(0);' onclick='return RefreshCommentList();' id='lnk_RefreshComments' runat='server' clientidmode='Static'>刷新评论</a><a href='#' onclick='return RefreshPage();'>刷新页面</a><a href='#top'>返回顶部</a></div>
+<div id='comment_form_container'></div>
+<div class='ad_text_commentbox' id='ad_text_under_commentbox'></div>
+<div id='ad_t2'></div>
+<div id='opt_under_post'></div>
+<div id='cnblogs_c1' class='c_ad_block'></div>
+<div id='under_post_news'></div>
+<div id='cnblogs_c2' class='c_ad_block'></div>
+<div id='under_post_kb'></div>
+<div id='HistoryToday' class='c_ad_block'></div>
+<script type='text/javascript'>
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="calendar"><div id="blog-calendar" style="display:none"></div><script type="text/javascript">loadBlogDefaultCalendar();</script></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright &copy;2017 阿赫瓦里
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+<!--PageEndHtml Block Begin-->
+<script language="javascript" type="text/javascript">
+//生成目录索引列表
+function GenerateContentList()
+{
+    var jquery_h3_list = $('#cnblogs_post_body h2');//如果你的章节标题不是h3,只需要将这里的h3换掉即可
+    if(jquery_h3_list.length>0)
+    {
+        var content = '<a name="_labelTop"></a>';
+        content    += '<div id="navCategory">';
+        content    += '<p style="font-size:18px"><b>阅读目录</b></p>';
+        content    += '<ul>';
+        for(var i =0;i<jquery_h3_list.length;i++)
+        {
+            var go_to_top = '<div style="text-align: right"><a href="#_labelTop">回到顶部</a><a name="_label' + i + '"></a></div>';
+            $(jquery_h3_list[i]).before(go_to_top);
+            var li_content = '<li><a href="#_label' + i + '">' + $(jquery_h3_list[i]).text() + '</a></li>';
+            content += li_content;
+        }
+        content    += '</ul>';
+        content    += '</div>';
+        if($('#cnblogs_post_body').length != 0 )
+        {
+            $($('#cnblogs_post_body')[0]).prepend(content);
+        }
+    }    
+}
+GenerateContentList();
+
+</script>
+<!--PageEndHtml Block End-->
+</body>
+</html>
