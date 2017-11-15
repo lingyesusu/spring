@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+     http://www.springframework.org/schema/rabbit  
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.2.xsd">
+
+	<import resource="common.xml" />
+	<rabbit:listener-container
+		connection-factory="connectionFactory">
+		<!-- spittleListener是监听的程序，method是执行的方法，queues是我们监听的队列，多个队列可以逗号隔开（因为我们采用的是分发，所以三个队列获取的消息是相同的，这里为了简便我放在一个监听程序中了，其实我们可以写三个消费者，每个消费者监听一个队列） -->
+		<rabbit:listener ref="spittleListener" method="onMessage"
+			queues="spittle.alert.queue.1,spittle.alert.queue.3,spittle.alert.queue.2" />
+	</rabbit:listener-container>
+	<bean id="spittleListener" class="com.spring.exchange.SpittleAlertHandler" />
+
+</beans>  

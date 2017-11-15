@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+     http://www.springframework.org/schema/rabbit  
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.2.xsd">
+  
+    <!-- rabbitMQ配置 -->
+    <rabbit:connection-factory id="rabbitConnectionFactory" host="localhost"
+                               port="5672" username="guest" password="guest" virtual-host="/"
+                               channel-cache-size="50"/>
+    
+    <rabbit:admin connection-factory="rabbitConnectionFactory"/>
+
+    <rabbit:queue name="test123queue" durable="true" auto-delete="false" />
+    <rabbit:queue name="test321queue" durable="true" auto-delete="false" />
+  
+</beans>  

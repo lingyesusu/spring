@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+     http://www.springframework.org/schema/rabbit  
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.2.xsd">
+  
+    <rabbit:connection-factory id="connectionFactory" host="localhost"
+                               port="5672" username="guest" password="guest" virtual-host="/"
+                               channel-cache-size="50"/>
+    <rabbit:admin connection-factory="connectionFactory"/>
+    
+    <!--定义消息队列-->
+    <rabbit:queue name="spring-test-queue1" durable="true" auto-delete="false" />
+    <rabbit:queue name="spring-test-queue2" durable="true" auto-delete="false" />
+  
+</beans>  
