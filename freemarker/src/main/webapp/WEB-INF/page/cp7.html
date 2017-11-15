@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>cp1.html</title>
+
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+
+</head>
+
+<body>
+	<h1>自定义指令</h1>
+	<!-- role是在spring_freemarker.xml中配置 -->
+	<!-- 入参是keyvalue，出参是list -->
+	<h2>如;用户是否拥有admin指令并返回admin的权限  result1返回用户的角色result2返回用户的权限</h2>
+	<@role user="123456" role="admin";result1,result2>
+		<#if result1>
+			我的角色是<font color="red">admin</font><br/>
+		</#if>
+		我拥有的权限是:<font color="red">
+		<#list result2 as item>
+			${item},
+		</#list>
+		</font><br/>
+    </@role>
+</body>
+</html>

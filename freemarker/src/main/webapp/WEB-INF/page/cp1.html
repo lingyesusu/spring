@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>cp1.html</title>
+
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+
+</head>
+
+<body>
+	<ul>
+		<li><font size="20px" color="red">整数：${intVar}</font></li>
+		<li><font size="20px" color="blue">长整数：${longVar}</font></li>
+		<li><font size="20px" color="pink">浮点数：${doubleVar}</font></li>
+		<li><font size="20px" color="yellow">字符串：${stringVar}</font></li>
+		<li><font size="20px" color="green">布尔值:${booleanVar?string('yes','no')}</font></li>
+		<li><font size="20px" color="green">java.sql.Date:${dateVar}</font></li>
+		<li><font size="20px" color="green">java.sql.Date:${date1Var?string('yyyy-MM-dd HH:mm:ss')}</font></li>
+		<li><font size="20px" color="red">null：${nullVar!'我是默认值'}</font></li>
+		<li><font size="20px" color="blue">missing：${ssssVar!'我是默认值'}</font></li>
+		
+	</ul>
+	
+	<ul>
+		<li>赋值&</li>
+		<#assign a=100/>
+		a=${a}<br/>
+		a+100=${a+100}
+	</ul>
+</body>
+</html>

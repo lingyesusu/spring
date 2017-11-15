@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>cp1.html</title>
+
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+
+</head>
+
+<body>
+	<!-- list语句 -->
+	<h2>list集合遍历</h2><br/>
+	<!-- 或#if myList?exists判断存在 -->
+	<#if myList??>
+		<#list myList as item>
+  			${item!}  <br/>
+		</#list>
+	</#if>
+	<br/>
+	<!-- Map语句 -->
+	<!-- map?keys as key不知为什么不行 -->
+	<h2>Map先将Key去处理</h2><br/>
+		<#list map.keySet() as key>
+			${key}：${map[key]}<br/>
+		</#list>
+	<br/>
+	
+	<h2>if语句</h2>
+	<ul>
+	<!-- if语句 -->
+		<li>if</li>
+		<#assign var=100>
+		<#if var?exists>
+		<font color="blue">var=99</font>
+		</#if>
+		
+		<#if var==99>
+		<font color="red">var=99</font>
+		</#if>
+		
+		<#if var==99>
+		<font color="red">var=99</font>
+		<#else>
+		<font color="red">var!=99</font>
+		</#if>
+		
+		<#if var&gt;99>
+		<font color="red">var大于99</font>
+		<#elseif var&lt;99>
+		<font color="red">var小于99</font>
+		<#else>
+		<font color="red">var=99</font>
+		</#if>
+		
+	</ul>
+	<h2>逻辑</h2>
+	<ul>
+		<#assign var='python'/>
+		<#if var=='python'||var=='java'>
+		<font color="red">python or java</font>
+		</#if>
+		<#if !(var=='python'&&var?length==6)||(var=='java')>
+		<font color="yellow">not(python length is 6或者java)</font>
+		</#if>
+	</ul>
+	<h2>逻辑</h2>
+	<ul>
+		<#assign var='python'/>
+		<#if var=='python'||var=='java'>
+		<font color="red">python or java</font>
+		</#if>
+		<#if !(var=='python'&&var?length==6||(var=='java'))>
+		<font color="yellow">not(python length is 6或者java)</font>
+		</#if>
+	</ul>
+	
+	<h2>switch</h2>
+	<ul>
+		<#assign var='java'/>
+		<#switch var>
+			<#case 'java'>
+			<#case 'python'>
+			java or python<br/>
+			<#break>
+			<#case 100>
+			100<br/>
+			<#break>
+			<#default>
+			other
+			<#break>
+		</#switch>
+	</ul>
+</body>
+</html>

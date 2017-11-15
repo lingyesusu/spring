@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>cp1.html</title>
+
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+
+</head>
+
+<body>
+	<h1>内建函数</h1>
+	<ul>
+		<h2>1,字符串内建函数</h2>
+		<#list "a|b|c|d"?split("|") as item>
+		<li>${item}</li>
+		</#list>
+		
+		<!-- 字符串内建函数 -->
+		<h2>2,字符串内建函数</h2>
+		<#assign var1="01/03/2017"?date("MM/dd/yyyy")/>
+		<#assign var2="15:05:30"?time("HH:mm:ss")/>
+		<#assign var3="2016-12-31 03:05PM"?datetime("yyyy-MM-dd hh:mm")/>
+		<li>${var1}</li>
+		<li>${var2}</li>
+		<li>${var3}</li>
+		
+		<!-- 数字类型内建函数 -->
+		<h2>3,数字类型内建函数</h2>
+		<#assign numVar1=314.5662/>
+		<li>${numVar1?string("0.##")}</li>
+		<li>${numVar1?round}</li>
+		
+		<!-- list内建函数 -->
+		<h2>4,list内建函数</h2>
+		<#assign listVar1=[1,2,3,4,11,12,13,14,21,22,23,24]/>
+		<li>${listVar1?chunk(4)?size}</li>
+		<#list listVar1?chunk(4)?last as item>
+		<li>${item}</li>
+		</#list>
+		
+		<!-- 其他内建函数 -->
+		<h2>5,其他内建函数</h2>
+		<#assign sVar='hello'/>
+		<li>${sVar?is_number?string('yes','no')}</li>
+		<li>${sVar?is_string?string('yes','no')}</li>
+		<li>${sVar?has_content?string('yes','no')}</li>
+		<li>${"1"+"2"}</li><!-- 12 -->
+		<li>${("1"+"2")?eval}</li><!-- 12整数 -->
+		<li>${"1+2"?eval}</li><!-- 3整数 -->
+	</ul>
+</body>
+</html>

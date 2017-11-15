@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>cp1.html</title>
+
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+
+</head>
+
+<body>
+	<ul>
+		<!-- 括号判断两个，对象是否为空,属性是否为空 -->
+		<li><font size="20px" color="blue">${(userObj.name)!'我是默认值'}</font></li>
+		<!-- html输出 -->
+		<li><font size="20px" color="blue">${(userObj.brief)!'我是默认值'}</font></li>
+		<!-- 文本输出 -->
+		<li><font size="20px" color="blue">${(userObj.brief)?html!'我是默认值'}</font></li>
+		
+	</ul>
+</body>
+</html>
