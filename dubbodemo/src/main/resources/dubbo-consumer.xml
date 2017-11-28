@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+    <dubbo:application name="demo-consumer"/>
+
+	<!--  使用zookeeper注册中心暴露服务地址   -->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181" />
+
+    <!--  使用multicast广播注册中心暴露发现服务地址 
+    <dubbo:registry address="multicast://224.5.6.7:1234"/> -->
+
+    <!-- 生成远程服务代理，可以和本地bean一样使用demoService -->
+    <dubbo:reference id="demoService" check="false" interface="com.provider.DemoService"/>
+
+</beans>
+<!-- 集群服务注册到多台zookeeper配置：
+<dubbo:registry protocol="zookeeper" address="10.20.153.10:2181,10.20.153.11:2181,10.20.153.12:2181" />
+分成多组注册中心:
+<dubbo:registry id="chinaRegistry" protocol="zookeeper" address="10.20.153.10:2181" group="china" />
+<dubbo:registry id="intlRegistry" protocol="zookeeper" address="10.20.153.10:2181" group="intl" />
+dubbo admin 配置连接集群
+＃注意一个地址加多个backup，任何一个节点如果存活着，那么总体服务不回出现问题
+dubbo.registry.address=zookeeper://127.0.0.1:2181?backup=127.0.0.1:2182,127.0.0.1:2183
+dubbo.admin.root.password=root
+dubbo.admin.guest.password=guest
+注意：此处不能采用 10.20.153.10:2181,10.20.153.11:2181,10.20.153.12:2181这种逗号分割的方式 -->

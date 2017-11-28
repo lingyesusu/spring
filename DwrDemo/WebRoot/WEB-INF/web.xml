@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+	<!-- 加不加都行-->
+	<listener>
+		<listener-class>org.directwebremoting.servlet.DwrListener</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>/dwr/</servlet-name>
+		<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class><!-- 
+			2.几版本 -->
+		<!-- <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class> --><!-- 3.几版本 -->
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<!-- 使用服务器推技术（反转AJAX） -->
+		<init-param>
+			<param-name>activeReverseAjaxEnabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<!-- 是能够从其他域进行请求true：开启；false：关闭 -->
+		<init-param>
+			<param-name>crossDomainSessionSecurity</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<!-- 允许远程js -->
+		<init-param>
+			<param-name>allowScriptTagRemoting</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>/dwr/</servlet-name>
+		<url-pattern>/dwr/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>
